@@ -146,7 +146,7 @@ const MapPage = () => {
 
   const getCityName = async (latitude, longitude) => {
     try {
-      const apiKey = 'AIzaSyCH_6X8CW2JlLwlfumVvaATmc0TuNrEVSc'; // Store your Google Maps API Key in environment variables
+      const apiKey = ''; // Store your Google Maps API Key in environment variables
       const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
           latlng: `${latitude},${longitude}`,
