@@ -10,6 +10,7 @@ import Diagnosis from './pages/Diagnosis';
 import MapPage from './pages/MapPage';
 import BookingForm from './pages/BookingForm';
 import UserProfile from './pages/UserProfile';
+import ChatBot from './pages/ChatBot';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,6 +24,7 @@ root.render(
         <Route path="map" element={<MapPage />} />
         <Route path="booking" element={<BookingForm />} />
         <Route path="profile/:id" element={<UserProfile />} />
+        <Route path="/ChatBot" element={<ChatBot/>} />
       </Route>
     </Routes>
   </Router>

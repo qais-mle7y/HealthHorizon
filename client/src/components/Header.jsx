@@ -61,6 +61,7 @@ const Header = () => {
         <ul className={`nav__menu ${isMenuOpen ? 'open' : ''}`}>
           <li><Link to="/">Home</Link></li>
           <li><Link to="/map">Analytics</Link></li>
+          <li><Link to="/chatbot">Chat</Link></li>
           <li><Link to="/diagnosis">Report Diagnosis</Link></li>
           {user ? (
             <li className="nav__item profile__dropdown">

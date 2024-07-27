@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { AutoComplete, Input, DatePicker, Space, Select, TimePicker } from 'antd';
+import {useChatbot} from './useChatbot';
+import Chatbot from './ChatBot';
 
 const BookingForm = () => {
   const [fullname, setFullname] = useState('');
@@ -9,6 +11,7 @@ const BookingForm = () => {
   const [location, setLocation] = useState('');
   const [clinics, setClinics] = useState([]);
   const [message, setMessage] = useState('');
+  const chatbot = useChatbot();
 
   const genderOptions = [
     { value: 'male', label: 'Male' },
@@ -128,6 +131,10 @@ const BookingForm = () => {
           </div>
         )}
       </div>
+      <div className="chatbot-home">
+            <Chatbot {...chatbot} />
+          </div>
+      
     </section>
   );
 };

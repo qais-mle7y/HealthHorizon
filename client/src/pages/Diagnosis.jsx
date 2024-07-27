@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DatePicker, Select } from 'antd';
 import Cookies from 'js-cookie';
+import {useChatbot} from './useChatbot';
+import Chatbot from './ChatBot';
 
 const Diagnosis = () => {
   const [userId, setUserId] = useState(null);
@@ -10,6 +12,7 @@ const Diagnosis = () => {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
+  const chatbot = useChatbot();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -165,6 +168,9 @@ const Diagnosis = () => {
         </form>
         <div id="message"></div>
       </div>
+      <div className="chatbot-home">
+            <Chatbot {...chatbot} />
+          </div>
     </section>
   );
 };

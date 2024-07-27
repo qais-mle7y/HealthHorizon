@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Input, Checkbox } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import Cookies from 'js-cookie';
+import {useChatbot} from './useChatbot';
+import Chatbot from './ChatBot';
 
 const Login = () => {
   const [message, setMessage] = useState('');
@@ -10,6 +12,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false); // State for "Remember Me"
   const navigate = useNavigate();
+  const chatbot = useChatbot();
 
   const handleRememberMeChange = (e) => {
     setRememberMe(e.target.checked);
@@ -97,6 +100,9 @@ const Login = () => {
         </form>
         <small>Don't have an account? <Link to="/signup">Sign Up</Link></small>
       </div>
+      <div className="chatbot-home">
+            <Chatbot {...chatbot} />
+          </div>
     </section>
   );
 };

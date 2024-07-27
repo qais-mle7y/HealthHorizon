@@ -367,6 +367,14 @@ textarea {
   font-size: 1.2em;
 }
 
+.chatbot-home {
+  position: absolute;
+  right: 0px;
+  width: 300px;
+  padding: 10px;
+  margin-top: 150px;
+}
+
 /* ===================== Map and City Data ===================== */
 .map-page {
   display: flex;
@@ -482,4 +490,143 @@ footer {
   color: var(--color-white);
   font-weight: 400;
 }
+
+/* Chatbot styles */
+.chatbot {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 400px; /* Adjust height as needed */
+  overflow: hidden;
+}
+
+.messages {
+  flex-grow: 1;
+  padding: var(--spacing-sm);
+  overflow-y: auto;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-grey-200);
+  display: flex;
+  flex-direction: column;
+  color: black;
+}
+
+.message {
+  padding: var(--spacing-sm);
+  margin: var(--spacing-sm) 0;
+  border-radius: var(--radius-1);
+  max-width: 80%;
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+.message.user {
+  background: var(--color-green-1);
+  color: black;
+  align-self: flex-end;
+  text-align: right;
+}
+
+.message.bot {
+  background: var(--color-grey-100);
+  color: var(--color-text);
+  align-self: flex-start;
+  text-align: left;
+}
+
+.input-area {
+  display: flex;
+  padding: var(--spacing-sm);
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-grey-200);
+}
+
+input {
+  flex-grow: 1;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-grey-300);
+  border-radius: var(--radius-1);
+  font-size: var(--font-size-base);
+}
+
+input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+button {
+  margin-left: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: none;
+  border-radius: var(--radius-2);
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button:hover {
+  background: var(--color-green-2);
+}
+
+/* Chatbot button styles */
+.chat-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: var(--transition);
+}
+
+.chat-btn:hover {
+  background-color: var(--color-green-2);
+}
+
+/* Modal styles */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: var(--color-white);
+  border-radius: var(--radius-2);
+  padding: var(--spacing-md);
+  width: 80%;
+  max-width: 600px;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-grey-500);
+}
+
+
+
+
 

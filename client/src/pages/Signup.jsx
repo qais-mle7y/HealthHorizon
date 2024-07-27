@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Input, Checkbox } from 'antd';
+import {useChatbot} from './useChatbot';
+import Chatbot from './ChatBot';
 
 const Signup = () => {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
+  const chatbot = useChatbot();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -85,6 +88,9 @@ const Signup = () => {
         </form>
         <small>Already have an account? <Link to="/login">Login</Link></small>
       </div>
+      <div className="chatbot-home">
+            <Chatbot {...chatbot} />
+          </div>
     </section>
   );
 };

@@ -6,6 +6,8 @@ import { Select } from 'antd';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import {useChatbot} from './useChatbot';
+import Chatbot from './ChatBot';
 
 
 const { Option } = Select;
@@ -102,6 +104,7 @@ const MapPage = () => {
   const mapInstanceRef = useRef(null);
   const heatLayerRef = useRef(null);
   const markersRef = useRef([]);
+  const chatbot = useChatbot();
 
   const diagnosisOptions = [
     "HIV-AIDS", "Tuberculosis", "Malaria", "COVID-19", "Cholera",
@@ -297,6 +300,9 @@ return (
           )}
         </div>
       </div>
+      <div className="chatbot-home">
+            <Chatbot {...chatbot} />
+          </div>
     </div>
   );
 
