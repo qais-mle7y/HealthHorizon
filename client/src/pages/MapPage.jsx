@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { Select } from 'antd';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
 const { Option } = Select;
 
@@ -52,6 +53,7 @@ const MapPage = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   const [selectedDisease, setSelectedDisease] = useState('HIV-AIDS');
   const [cityData, setCityData] = useState([]);
+  const [pieData, setPieData] = useState([]);
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const heatLayerRef = useRef(null);
@@ -142,7 +144,15 @@ const MapPage = () => {
     const aggregatedCityData = aggregateDataByCity(clusteredData);
     setCityData(aggregatedCityData);
 
+    const pieChartData = aggregatedCityData.map(city => ({
+      name: city.city,
+      value: city.count
+    }));
+    setPieData(pieChartData);
+
   }, [heatmapData]);
+
+  
 
   const getCityName = async (latitude, longitude) => {
     try {
@@ -165,7 +175,7 @@ const MapPage = () => {
   const handleDiseaseChange = (value) => {
     setSelectedDisease(value);
   };
-
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042'];
   return (
     <div className="map-page">
       <h2 className="page-title">Analytics</h2>
@@ -183,6 +193,24 @@ const MapPage = () => {
         </div>
         <div className="city-data">
           <h3>City Data</h3>
+          <PieChart width={400} height={400}>
+            <Pie
+              data={pieData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              outerRadius={120}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {pieData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
           {cityData.length === 0 ? (
             <div className="loading">Loading city data...</div>
           ) : (
