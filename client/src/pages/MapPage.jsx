@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
+
 const { Option } = Select;
 
 const clusterDataPoints = (data, proximityThreshold = 0.01) => {
@@ -32,6 +33,8 @@ const clusterDataPoints = (data, proximityThreshold = 0.01) => {
   return clusters;
 };
 
+
+
 const aggregateDataByCity = (data) => {
   const cityDataMap = new Map();
 
@@ -49,6 +52,47 @@ const aggregateDataByCity = (data) => {
   return Array.from(cityDataMap.values());
 };
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF4444', '#FF8888'];  
+const CustomLegend = ({ payload }) => (
+  <ul style={{ display: 'flex', flexWrap: 'wrap', listStyleType: 'none', margin:10 }}>
+    {payload.map((entry, index) => (
+      <li key={`item-${index}`} style={{ color: entry.color, marginBottom: 4 }}>
+        <span style={{ fontWeight: 'bold' }}>{entry.value}</span>: {entry.payload.percent}%
+      </li>
+    ))}
+  </ul>
+);
+
+
+const MyPieChart = ({ pieData }) => {
+  const total = pieData.reduce((acc, entry) => acc + entry.value, 0);
+  const pieDataWithPercent = pieData.map((entry) => ({
+    ...entry,
+    percent: ((entry.value / total) * 100).toFixed(0),
+  }));
+
+  return (
+    <PieChart width={400} height={400}>
+     <Legend verticalAlign='top' content={<CustomLegend />} />
+      <Pie
+        data={pieDataWithPercent}
+        cx="50%"
+        cy="50%"
+        labelLine={false}
+        outerRadius={120}
+        fill="#8884d8"
+        dataKey="value"
+      >
+        {pieDataWithPercent.map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+      <Tooltip />
+
+    </PieChart>
+  );
+};
+
 const MapPage = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   const [selectedDisease, setSelectedDisease] = useState('HIV-AIDS');
@@ -57,6 +101,7 @@ const MapPage = () => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const heatLayerRef = useRef(null);
+  const markersRef = useRef([]);
 
   const diagnosisOptions = [
     "HIV-AIDS", "Tuberculosis", "Malaria", "COVID-19", "Cholera",
@@ -98,10 +143,20 @@ const MapPage = () => {
 
   useEffect(() => {
     if (mapInstanceRef.current === null) {
-      mapInstanceRef.current = L.map(mapRef.current).setView([-30.5595, 22.9375], 6);
+      mapInstanceRef.current = L.map(mapRef.current).setView([-28.4793, 24.6727], 5);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(mapInstanceRef.current);
+      const thumbtackIcon = L.icon({
+        iconUrl: 'src/assets/map-marker.svg', // Path to your thumbtack image
+        iconSize: [32, 32], // Size of the icon
+        iconAnchor: [16, 32], // Point of the icon which will correspond to marker's location
+        popupAnchor: [0, -32] // Point from which the popup should open relative to the iconAnchor
+      });
+
+      L.marker([-28.4793, 24.6727]).addTo(mapInstanceRef.current)
+      .bindPopup('Center of South Africa')
+      .openPopup();
     }
 
     if (heatmapData.length === 0) {
@@ -112,6 +167,8 @@ const MapPage = () => {
     if (heatLayerRef.current) {
       mapInstanceRef.current.removeLayer(heatLayerRef.current);
     }
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
 
     const clusteredData = clusterDataPoints(heatmapData);
     const maxCount = Math.max(...clusteredData.map(item => item.count));
@@ -128,6 +185,7 @@ const MapPage = () => {
         return [item.latitude, item.longitude, intensity];
       });
 
+
     heatLayerRef.current = L.heatLayer(transformedHeatmapData, {
       radius: 50,
       blur: 35,
@@ -141,13 +199,35 @@ const MapPage = () => {
       }
     }).addTo(mapInstanceRef.current);
 
+    clusteredData.forEach(point => {
+      const marker = L.circleMarker([point.latitude, point.longitude], {
+        radius: 2,
+        fillColor: "#FF0000",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(mapInstanceRef.current);
+
+
+      markersRef.current.push(marker);
+    });
+
+
+
     const aggregatedCityData = aggregateDataByCity(clusteredData);
     setCityData(aggregatedCityData);
 
-    const pieChartData = aggregatedCityData.map(city => ({
-      name: city.city,
-      value: city.count
-    }));
+    const sortedData = aggregatedCityData.sort((a, b) => b.count - a.count);
+    const top5Data = sortedData.slice(0, 5);
+    const otherData = sortedData.slice(5).reduce((acc, cur) => acc + cur.count, 0);
+    const pieChartData = [
+      ...top5Data.map(city => ({
+        name: city.city,
+        value: city.count
+      })),
+      { name: 'Other', value: otherData }
+    ];
     setPieData(pieChartData);
 
   }, [heatmapData]);
@@ -156,7 +236,7 @@ const MapPage = () => {
 
   const getCityName = async (latitude, longitude) => {
     try {
-      const apiKey = ''; // Store your Google Maps API Key in environment variables
+      const apiKey = 'AIzaSyCNgSQEPlPLk5ZCxB-Pdx535yyCLPWTFQI'; // Store your Google Maps API Key in environment variables
       const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
           latlng: `${latitude},${longitude}`,
@@ -172,11 +252,14 @@ const MapPage = () => {
     }
   };
 
+  
+
   const handleDiseaseChange = (value) => {
     setSelectedDisease(value);
   };
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042', '#FF8042'];
-  return (
+
+  
+return (
     <div className="map-page">
       <h2 className="page-title">Analytics</h2>
       <div className="select-container">
@@ -190,27 +273,16 @@ const MapPage = () => {
       <div className="content">
         <div className="map-container">
           <div id="map" ref={mapRef} className="map"></div>
+          <p className="text">The red dot represents a reported diagnosis which can lead to an outbreak</p>
         </div>
         <div className="city-data">
-          <h3>City Data</h3>
-          <PieChart width={400} height={400}>
-            <Pie
-              data={pieData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-              outerRadius={120}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {pieData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
+          <h3>Top 5 cities by {selectedDisease} Cases</h3>
+          <div className="pie-chart-wrapper">
+            <MyPieChart pieData={pieData} />
+          </div>
+
+          <h3>{selectedDisease} cases per city or town</h3>
+
           {cityData.length === 0 ? (
             <div className="loading">Loading city data...</div>
           ) : (

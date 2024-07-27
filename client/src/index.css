@@ -405,9 +405,8 @@ textarea {
 }
 
 .map-container {
-  flex: 2;
-  margin-right: 20px;
-  height: 100%; /* Space between map and city data */
+  height: 300px; /* Adjust the height to make the map smaller */
+  width: 50%;/* Space between map and city data */
 }
 
 .map {
@@ -416,19 +415,22 @@ textarea {
 }
 
 .city-data {
-  flex: 1; /* Less space compared to map container */
-  max-height: 625px; /* Match the height of the map */
-  padding: 20px; /* Add padding for better spacing */
-  background: #fff; /* White background for a clean look */
-  border: 1px solid #ddd; /* Light gray border for subtle separation */
-  border-radius: var(--radius-2); /* Rounded corners */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for a lifted effect */
+  flex: 1;
+  max-height: 100%;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: var(--radius-2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   font-size: 0.9em;
-  overflow-y: auto; /* Enable scrolling if content overflows */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .city-data h3 {
-  margin-bottom: 20px; /* Space below the header */
+  margin-bottom: 10px; /* Space below the header */
   text-align: center; /* Center align the header text */
   color: var(--color-primary); /* Primary color for header text */
   font-size: 1.5em; /* Larger font size for the header */
@@ -455,6 +457,9 @@ textarea {
   background: #f4f4f4; /* Alternating background color for list items */
 }
 
+.pie-chart-wrapper{
+  padding: 30px;
+}
 .loading {
   font-size: 1.2em; /* Larger font size for loading message */
   text-align: center; /* Center align the loading message */
