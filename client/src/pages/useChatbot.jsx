@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import appDescription from './appDescription';
 
-const API_KEY = process.env.REACT_APP_API_KEY;
+const API_KEY = 'sk-proj-X7bDWE6qQ2R7t89XgNNyT3BlbkFJXlko80EftXe2A14NTbeg';
 const MAX_RETRIES = 10;
 const RETRY_DELAY_BASE = 1000;
 
