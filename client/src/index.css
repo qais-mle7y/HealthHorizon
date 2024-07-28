@@ -491,12 +491,12 @@ footer {
   font-weight: 400;
 }
 
-/* Chatbot styles */
+/* ===================== Chatbot ===================== */
 .chatbot {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 400px; /* Adjust height as needed */
+  height: 600px; 
   overflow: hidden;
 }
 
@@ -570,7 +570,6 @@ button:hover {
   background: var(--color-green-2);
 }
 
-/* Chatbot button styles */
 .chat-btn {
   position: fixed;
   bottom: 20px;
@@ -594,7 +593,7 @@ button:hover {
   background-color: var(--color-green-2);
 }
 
-/* Modal styles */
+/* ===================== Modal ===================== */
 .modal {
   display: flex;
   justify-content: center;

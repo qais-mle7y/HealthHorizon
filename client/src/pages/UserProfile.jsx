@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from 'antd';
 import Cookies from 'js-cookie';
+import Chatbot from './ChatBot';
+import { useChatbot } from './useChatbot';
 
 const UserProfile = () => {
   const [message, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
+  const chatbot = useChatbot;
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -123,6 +126,9 @@ const UserProfile = () => {
           />
           <button type="submit" className="btn primary">Update details</button>
         </form>
+      </div>
+      <div className="chatbot-home">
+        <Chatbot {...chatbot} />
       </div>
     </section>
   );

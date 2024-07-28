@@ -101,8 +101,8 @@ const Login = () => {
         <small>Don't have an account? <Link to="/signup">Sign Up</Link></small>
       </div>
       <div className="chatbot-home">
-            <Chatbot {...chatbot} />
-          </div>
+        <Chatbot {...chatbot} />
+      </div>
     </section>
   );
 };

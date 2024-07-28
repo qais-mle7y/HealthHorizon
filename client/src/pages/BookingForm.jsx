@@ -132,8 +132,8 @@ const BookingForm = () => {
         )}
       </div>
       <div className="chatbot-home">
-            <Chatbot {...chatbot} />
-          </div>
+        <Chatbot {...chatbot} />
+      </div>
       
     </section>
   );

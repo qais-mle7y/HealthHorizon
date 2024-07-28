@@ -89,8 +89,8 @@ const Signup = () => {
         <small>Already have an account? <Link to="/login">Login</Link></small>
       </div>
       <div className="chatbot-home">
-            <Chatbot {...chatbot} />
-          </div>
+        <Chatbot {...chatbot} />
+      </div>
     </section>
   );
 };

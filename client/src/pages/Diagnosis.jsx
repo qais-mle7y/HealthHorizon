@@ -169,8 +169,8 @@ const Diagnosis = () => {
         <div id="message"></div>
       </div>
       <div className="chatbot-home">
-            <Chatbot {...chatbot} />
-          </div>
+        <Chatbot {...chatbot} />
+      </div>
     </section>
   );
 };
