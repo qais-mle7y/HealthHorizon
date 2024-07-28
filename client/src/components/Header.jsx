@@ -31,7 +31,7 @@ const Header = () => {
       }
 
       const data = await response.json();
-      console.log('Fetched user data:', data); // Debugging line
+      // Debugging line console.log('Fetched user data:', data);
       setUser(data); // Assuming 'data' contains 'username' and 'userId'
     } catch (error) {
       console.error('Error fetching user details:', error);

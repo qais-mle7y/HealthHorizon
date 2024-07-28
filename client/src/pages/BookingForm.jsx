@@ -26,7 +26,7 @@ const BookingForm = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
-        console.log('Latitude:', latitude, 'Longitude:', longitude);
+        // Debugging line console.log('Latitude:', latitude, 'Longitude:', longitude);
 
         // make an API request to a mapping service
         const response = await fetch(`https://healthhorizon-ecd7c8hvdqgxckhn.eastus-01.azurewebsites.net/api/booking`);
@@ -46,9 +46,6 @@ const BookingForm = () => {
     </span>
   );
 
-  const onChange = (date, dateString) => {
-    console.log(date, dateString);
-  };
 
   const locations = [];
 
@@ -61,13 +58,13 @@ const BookingForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Process form submission
-    console.log({
-      fullname,
-      date,
-      time,
-      gender,
-      location,
-    });
+    // Debugging line console.log({
+    //   fullname,
+    //   date,
+    //   time,
+    //   gender,
+    //   location,
+    // });
     setMessage('Booked successfully');
   };
 
@@ -89,12 +86,10 @@ const BookingForm = () => {
           )}
           <Input type="text" placeholder="Full Name" value={fullname} style={{ width: 395 }} onChange={(e) => setFullname(e.target.value)} required />
           <Space direction="vertical">
-            <DatePicker onChange={onChange}
-              style={{ width: 395 }} />
+            <DatePicker style={{ width: 395 }} />
           </Space>
           <Space>
-            <TimePicker onChange={(value) => console.log(value)}
-              style={{ width: 395 }} />
+            <TimePicker style={{ width: 395 }} />
           </Space>
 
           <Select
@@ -104,7 +99,8 @@ const BookingForm = () => {
               width: 300,
             }}
             options={genderOptions}
-            value={gender}
+            value={gender} 
+            placeholder="Select Gender" 
             required
           />
           <AutoComplete

@@ -42,9 +42,6 @@ const Signup = () => {
     }
   };
 
-  const onChange = (e) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
 
   return (
     <section className="register">
@@ -83,7 +80,7 @@ const Signup = () => {
             name="confirmPassword"
             required
           />
-          <Checkbox onChange={onChange}>I agree to the terms and conditions.</Checkbox>
+          <Checkbox>I agree to the terms and conditions.</Checkbox>
           <button type="submit" className="btn primary">Register</button>
         </form>
         <small>Already have an account? <Link to="/login">Login</Link></small>

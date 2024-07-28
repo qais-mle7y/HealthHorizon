@@ -2,13 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet/dist/leaflet.css';
-import { Select } from 'antd';
-import Cookies from 'js-cookie';
+import { Select, Button, message } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons'; import Cookies from 'js-cookie';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import {useChatbot} from './useChatbot';
+import { useChatbot } from './useChatbot';
 import Chatbot from './ChatBot';
-
+import Marker from '../assets/map-marker.svg';
 
 const { Option } = Select;
 
@@ -35,8 +35,6 @@ const clusterDataPoints = (data, proximityThreshold = 0.01) => {
   return clusters;
 };
 
-
-
 const aggregateDataByCity = (data) => {
   const cityDataMap = new Map();
 
@@ -54,9 +52,9 @@ const aggregateDataByCity = (data) => {
   return Array.from(cityDataMap.values());
 };
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF4444', '#FF8888'];  
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF4444', '#FF8888'];
 const CustomLegend = ({ payload }) => (
-  <ul style={{ display: 'flex', flexWrap: 'wrap', listStyleType: 'none', margin:10 }}>
+  <ul style={{ display: 'flex', flexWrap: 'wrap', listStyleType: 'none', margin: 10 }}>
     {payload.map((entry, index) => (
       <li key={`item-${index}`} style={{ color: entry.color, marginBottom: 4 }}>
         <span style={{ fontWeight: 'bold' }}>{entry.value}</span>: {entry.payload.percent}%
@@ -66,36 +64,7 @@ const CustomLegend = ({ payload }) => (
 );
 
 
-const MyPieChart = ({ pieData }) => {
-  const total = pieData.reduce((acc, entry) => acc + entry.value, 0);
-  const pieDataWithPercent = pieData.map((entry) => ({
-    ...entry,
-    percent: ((entry.value / total) * 100).toFixed(0),
-  }));
-
-  return (
-    <PieChart width={400} height={400}>
-     <Legend verticalAlign='top' content={<CustomLegend />} />
-      <Pie
-        data={pieDataWithPercent}
-        cx="50%"
-        cy="50%"
-        labelLine={false}
-        outerRadius={120}
-        fill="#8884d8"
-        dataKey="value"
-      >
-        {pieDataWithPercent.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
-      <Tooltip />
-
-    </PieChart>
-  );
-};
-
-const MapPage = () => {
+const AnalyticsPage = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   const [selectedDisease, setSelectedDisease] = useState('HIV-AIDS');
   const [cityData, setCityData] = useState([]);
@@ -116,7 +85,7 @@ const MapPage = () => {
     const fetchHeatmapData = async (disease) => {
       const token = Cookies.get('authToken');
       try {
-        console.log(`Fetching heatmap data for disease: ${disease}`);
+        // Debugging line console.log(`Fetching heatmap data for disease: ${disease}`);
         const response = await axios.get(`https://healthhorizon-ecd7c8hvdqgxckhn.eastus-01.azurewebsites.net/api/Diagnosis/heatmap`, {
           params: { disease },
           headers: {
@@ -127,7 +96,7 @@ const MapPage = () => {
         });
 
         if (response.status === 200) {
-          console.log('Heatmap data:', response.data);
+          // Debugging line console.log('Heatmap data:', response.data);
           const dataWithCities = await Promise.all(response.data.map(async point => {
             const city = await getCityName(point.latitude, point.longitude);
             return { ...point, city };
@@ -151,15 +120,15 @@ const MapPage = () => {
         attribution: '© OpenStreetMap contributors'
       }).addTo(mapInstanceRef.current);
       const thumbtackIcon = L.icon({
-        iconUrl: 'src/assets/map-marker.svg', // Path to your thumbtack image
-        iconSize: [32, 32], // Size of the icon
+        iconUrl: Marker,
+        iconSize: [30, 30], // Size of the icon
         iconAnchor: [16, 32], // Point of the icon which will correspond to marker's location
         popupAnchor: [0, -32] // Point from which the popup should open relative to the iconAnchor
       });
 
-      L.marker([-28.4793, 24.6727]).addTo(mapInstanceRef.current)
-      .bindPopup('Center of South Africa')
-      .openPopup();
+      L.marker([-28.4793, 24.6727], { icon: thumbtackIcon }).addTo(mapInstanceRef.current)
+        .bindPopup('Center of South Africa')
+        .openPopup();
     }
 
     if (heatmapData.length === 0) {
@@ -235,11 +204,11 @@ const MapPage = () => {
 
   }, [heatmapData]);
 
-  
+
 
   const getCityName = async (latitude, longitude) => {
     try {
-      const apiKey = ''; // Store your Google Maps API Key in environment variables
+      const apiKey = 'AIzaSyCNgSQEPlPLk5ZCxB-Pdx535yyCLPWTFQI'; // Store your Google Maps API Key in environment variables
       const response = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
           latlng: `${latitude},${longitude}`,
@@ -255,18 +224,60 @@ const MapPage = () => {
     }
   };
 
-  
-
   const handleDiseaseChange = (value) => {
     setSelectedDisease(value);
   };
 
-  
-return (
+  const total = pieData.reduce((acc, entry) => acc + entry.value, 0);
+  const pieDataWithPercent = pieData.map((entry) => ({
+    ...entry,
+    percent: Math.round((entry.value / total) * 100)
+  }));
+
+  const CustomLegend = ({ payload }) => (
+    <ul style={{ display: 'flex', flexWrap: 'wrap', listStyleType: 'none', margin: 10, justifyContent: 'center' }}>
+      {payload.map((entry, index) => (
+        <li key={`item-${index}`} style={{ color: entry.color, marginBottom: 4, marginRight: 10 }}>
+          <span style={{ fontWeight: 'bold' }}>{entry.value}</span>: {entry.payload.percent}%
+        </li>
+      ))}
+    </ul>
+  );
+
+  const downloadPieChartData = () => {
+    const data = pieDataWithPercent.map(item => `${item.name},${item.value},${item.percent}%`).join('\n');
+    const blob = new Blob([`Name,Value,Percentage\n${data}`], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${selectedDisease}_top_cities.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    message.success('Pie chart data downloaded successfully');
+  };
+
+  const downloadCityData = () => {
+    const data = cityData.map(item => `${item.city},${item.count}`).join('\n');
+    const blob = new Blob([`City,Cases\n${data}`], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${selectedDisease}_all_cities.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    message.success('City data downloaded successfully');
+  };
+
+
+  return (
     <div className="map-page">
       <h2 className="page-title">Analytics</h2>
       <div className="select-container">
-        <label htmlFor="DiagnosisName">Please select what diagnosis data are you looking for: </label>
+        <label htmlFor="DiagnosisName">Please select what diagnosis data you are looking for: </label>
         <Select defaultValue={selectedDisease} style={{ width: 200 }} onChange={handleDiseaseChange}>
           {diagnosisOptions.map(disease => (
             <Option key={disease} value={disease}>{disease}</Option>
@@ -275,17 +286,54 @@ return (
       </div>
       <div className="content">
         <div className="map-container">
+          <h3>{selectedDisease} HeatMap</h3>
           <div id="map" ref={mapRef} className="map"></div>
-          <p className="text">The red dot represents a reported diagnosis which can lead to an outbreak</p>
+          <p className="map-label">The red dot represents a reported diagnosis which can lead to an outbreak.</p>
+        </div>
+        <div className="pie-chart-container">
+          <div className="section-header">
+            <h3>Top 5 cities by {selectedDisease} Cases</h3>
+            <Button
+              className="custom-button"
+              icon={<DownloadOutlined />}
+              size="medium"
+              onClick={downloadPieChartData}
+            ></Button>
+          </div>
+          {pieDataWithPercent.length === 0 ? (
+            <div className="loading">Loading pie chart data...</div>
+          ) : (
+            <div className="pie-chart-wrapper">
+              <PieChart width={400} height={400}>
+                <Legend verticalAlign='top' content={<CustomLegend />} />
+                <Pie
+                  data={pieDataWithPercent}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={150}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieDataWithPercent.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </div>
+          )}
         </div>
         <div className="city-data">
-          <h3>Top 5 cities by {selectedDisease} Cases</h3>
-          <div className="pie-chart-wrapper">
-            <MyPieChart pieData={pieData} />
+          <div className="section-header">
+            <h3>{selectedDisease} cases per city or town</h3>
+            <Button
+              className="custom-button"
+              icon={<DownloadOutlined />}
+              size="medium"
+              onClick={downloadCityData}
+            ></Button>
           </div>
-
-          <h3>{selectedDisease} cases per city or town</h3>
-
           {cityData.length === 0 ? (
             <div className="loading">Loading city data...</div>
           ) : (
@@ -294,7 +342,6 @@ return (
                 <li key={index}>
                   {city.city}: {city.count} {city.count === 1 ? 'case' : 'cases'}
                 </li>
-
               ))}
             </ul>
           )}
@@ -305,7 +352,6 @@ return (
       </div>
     </div>
   );
-
 };
 
-export default MapPage;
+export default AnalyticsPage;

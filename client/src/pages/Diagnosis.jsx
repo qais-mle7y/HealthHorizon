@@ -41,7 +41,7 @@ const Diagnosis = () => {
 
         const data = await response.json(); // Try parsing the response as JSON
         setUserId(data.userId); // Set the userId in the state
-        console.log('User details:', data);
+        // Debugging line console.log('User details:', data);
       } catch (error) {
         console.error('Error fetching user details:', error);
         setMessage('Error fetching user details. Please try again.');
@@ -105,7 +105,7 @@ const Diagnosis = () => {
     data.latitude = document.getElementById('latitude').value;
     data.longitude = document.getElementById('longitude').value;
   
-    console.log('Data to be sent:', data);
+    // Debugging line console.log('Data to be sent:', data);
   
     try {
       const response = await fetch('https://healthhorizon-ecd7c8hvdqgxckhn.eastus-01.azurewebsites.net/api/Diagnosis', {

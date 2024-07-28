@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Diagnosis from './pages/Diagnosis';
-import MapPage from './pages/MapPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 import BookingForm from './pages/BookingForm';
 import UserProfile from './pages/UserProfile';
 
@@ -21,7 +21,7 @@ root.render(
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
         <Route path="diagnosis" element={<Diagnosis />} />
-        <Route path="map" element={<MapPage />} />
+        <Route path="map" element={<AnalyticsPage />} />
         <Route path="booking" element={<BookingForm />} />
         <Route path="profile/:id" element={<UserProfile />} />
       </Route>

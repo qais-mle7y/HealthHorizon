@@ -30,7 +30,7 @@ const UserProfile = () => {
       delete payload.password;
     }
 
-    console.log('Payload:', payload);
+    // Debugging line console.log('Payload:', payload);
 
     try {
       const token = Cookies.get('authToken');
@@ -40,7 +40,7 @@ const UserProfile = () => {
         return;
       }
 
-      console.log('Authorization token:', token); // Log the token for debugging
+      // Debugging line console.log('Authorization token:', token);
 
       const response = await fetch('https://healthhorizon-ecd7c8hvdqgxckhn.eastus-01.azurewebsites.net/api/Users/update', {
         method: 'PUT',
@@ -63,6 +63,7 @@ const UserProfile = () => {
         }
         setMessage('Profile updated successfully');
         setIsError(false);
+        setTimeout(() => navigate('/'), 1000);
       } else {
         let errorText;
         if (contentType && contentType.includes('application/json')) {
