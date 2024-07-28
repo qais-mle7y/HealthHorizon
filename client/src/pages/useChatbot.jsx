@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import appDescription from './appDescription';
 
-const API_KEY = 'sk-proj-8clcae7DaW2WQaSioSxVT3BlbkFJwbXksYAriNsp1FAtMVk4';
+const API_KEY = process.env.GPT;
 const MAX_RETRIES = 10;
 const RETRY_DELAY_BASE = 1000;
 
